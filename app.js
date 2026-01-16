@@ -6,8 +6,8 @@ const path=require("path");
 const app=express();
 const ejsMate=require("ejs-mate");
 const Building=require("./models/schema");
-
-
+const methodOverride=require("method-override");
+app.use(methodOverride("_method"));
 main()
 .then(()=>{
     console.log("mongodb connection successful");
@@ -18,6 +18,7 @@ main()
 async function main(){
     await mongoose.connect(MONGO_URL);
 }
+
 //setting up ejs views folder and public folder path
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"/views"));
@@ -28,7 +29,11 @@ app.engine("ejs",ejsMate);
 app.listen(PORT,()=>{
     console.log(`PORT ${PORT} is listening`);
 })
-app.get("/",async (req,res)=>{
+app.get("/jiitscout",async (req,res)=>{
     let buildings=await Building.find();
-    res.render("home",{buildings});
+    res.render("pages/home",{buildings});
+})
+
+app.get("/jiitscout/stuff",(req,res)=>{
+    res.render("pages/stuff");
 })
